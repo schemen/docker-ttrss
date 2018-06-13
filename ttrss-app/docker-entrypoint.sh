@@ -20,7 +20,10 @@ if [ "$1" = 'web' ]; then
 fi
 
 if [ "$1" = 'worker' ]; then
-    # Check if version is checked out or not, if not, clone repository
+    # Verify that lock files are gone
+    # Please make sure that there is always ONLY 1 worker running
+    echo "Removing previous/old update_daemon lockfiles..."
+    rm ./lock/update_daemon*
     while true;
     do
         ./update_daemon2.php

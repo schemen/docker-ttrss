@@ -9,8 +9,6 @@ RUN set -xe && \
     git bash curl dumb-init \
     libxml2-dev libpng-dev postgresql-dev icu-dev
 
-COPY docker-entrypoint.sh /
-
 EXPOSE 9000
 
 RUN docker-php-ext-install intl dom gd iconv pcntl fileinfo json pgsql pdo pdo_mysql pdo_pgsql mysqli mbstring posix session
@@ -19,6 +17,8 @@ RUN docker-php-ext-install intl dom gd iconv pcntl fileinfo json pgsql pdo pdo_m
 RUN set -xe && apk del --progress --purge && rm -rf /var/cache/apk/*
 
 WORKDIR /data
+
+COPY docker-entrypoint.sh /
 
 RUN chown 1001:1001 -R /data && \
     chown 1001:1001 -R /docker-entrypoint.sh && \
