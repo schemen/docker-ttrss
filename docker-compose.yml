@@ -1,0 +1,52 @@
+version: '2'
+
+services:
+  app:
+    build: ttrss-app/.
+    image: ttrss-app:latest
+    command: web
+    volumes:
+      - ttrss-data:/data
+
+  worker:
+    build: ttrss-app/.
+    image: ttrss-app:latest
+    command: worker
+    volumes:
+      - ttrss-data:/data
+
+  updater:
+    build: ttrss-app/.
+    image: ttrss-app:latest
+    command: updater
+    volumes:
+      - ttrss-data:/data
+
+  nginx:
+    build: ttrss-nginx/.
+    image: ttrss-nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ttrss-data:/data
+
+
+  ## You can also just attach the config file to the default NGINX
+  ## image if you do not want to use the ttrss-nginx image
+  #nginx:
+  #  image: nginx
+  #  ports:
+  #    - "8080:80"
+  #  volumes:
+  #    - ./temp:/data
+  #    - ./ttrss-nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=ttrss
+      - POSTGRES_DB=ttrss
+
+volumes:
+  ttrss-data:

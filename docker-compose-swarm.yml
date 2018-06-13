@@ -1,0 +1,90 @@
+version: '3'
+
+services:
+  app:
+    image: schemen/ttrss-app:latest
+    command: web
+    volumes:
+      - ttrss-data:/data
+    networks:
+    - internal
+
+  worker:
+    image: schemen/ttrss-app:latest
+    command: worker
+    volumes:
+      - ttrss-data:/data
+    networks:
+    - internal
+
+  updater:
+    image: schemen/ttrss-app:latest
+    command: updater
+    volumes:
+      - ttrss-data:/data
+    networks:
+    - internal
+
+  nginx:
+    image: schemen/ttrss-nginx:latest
+    ## Uncomment if you don't want to use traefik, be aware that it is not HTTPS
+    #ports:
+    #  - "8080:80"
+    volumes:
+      - ttrss-data:/data
+    deploy:
+      replicas: 1
+      ## These are labels for Traefik to know how to proxy to the nginx container
+      labels:
+        - traefik.frontend.rule=Host:rss.example.com
+        - traefik.docker.network=traefik_public
+        - traefik.port=80
+    networks:
+    - internal
+    - traefik_public
+
+  db:
+    image: postgres:latest
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=ttrss
+      - POSTGRES_DB=ttrss
+    networks:
+    - internal
+
+  db-backup:
+    image: postgres:latest
+  environment:
+    - POSTGRES_PASSWORD=password
+    - POSTGRES_USER=ttrss
+    - POSTGRES_DB=ttrss
+    volumes:
+      - db-backup:/dump
+      - /etc/localtime:/etc/localtime:ro
+    entrypoint: |
+      bash -c 'bash -s <<EOF
+      trap "break;exit" SIGHUP SIGINT SIGTERM
+      sleep 2m
+      while /bin/true; do
+        pg_dump -Fc > /dump/dump_\`date +%d-%m-%Y"_"%H_%M_%S\`.psql
+        (ls -t /dump/dump*.psql|head -n $$BACKUP_NUM_KEEP;ls /dump/dump*.psql)|sort|uniq -u|xargs rm -- {}
+        sleep $$BACKUP_FREQUENCY
+      done
+      EOF'
+    networks:
+    - internal
+
+volumes:
+  ttrss-data:
+  db:
+  db-backup:
+
+networks:
+  traefik_public:
+    external: true
+  internal:
+## Uncomment if you want encrypted overlay traffic
+#    driver_opts:
+#      encrypted: ""
