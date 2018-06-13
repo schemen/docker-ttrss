@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  app:
+  ttrss:
     build: ttrss-app/.
     image: ttrss-app:latest
     command: web
