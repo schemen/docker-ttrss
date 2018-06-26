@@ -1,4 +1,4 @@
-FROM php:7-fpm-alpine3.6
+FROM php:7-fpm-alpine3.7
 
 LABEL description="A complete, self-hosted Tiny Tiny RSS (TTRSS) environment." \
       maintainer="Schemen <me@schemen.me>"

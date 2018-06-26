@@ -23,7 +23,7 @@ if [ "$1" = 'worker' ]; then
     # Verify that lock files are gone
     # Please make sure that there is always ONLY 1 worker running
     echo "Removing previous/old update_daemon lockfiles..."
-    rm ./lock/update_daemon*
+    rm -f ./lock/update_daemon*
     while true;
     do
         ./update_daemon2.php
