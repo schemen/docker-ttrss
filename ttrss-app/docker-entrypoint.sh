@@ -16,7 +16,7 @@ if [ "$1" = 'web' ]; then
     else
         git clone $TTRRS_GIT .
     fi
-    php-fpm
+    /usr/sbin/php-fpm8 -F
 fi
 
 if [ "$1" = 'worker' ]; then
