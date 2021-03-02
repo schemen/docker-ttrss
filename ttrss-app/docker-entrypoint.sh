@@ -26,7 +26,7 @@ if [ "$1" = 'worker' ]; then
     rm -f ./lock/update_daemon*
     while true;
     do
-        ./update_daemon2.php
+        /usr/bin/php8 /data/update_daemon2.php
     done
 fi
 

@@ -5,7 +5,7 @@ LABEL description="A complete, self-hosted Tiny Tiny RSS (TTRSS) environment." \
 
 
 RUN apk add --no-cache dcron php8 php8-fpm \
-	php8-pdo php8-gd php8-pgsql php8-pdo_mysql php8-pdo_pgsql php8-mbstring \
+	php8-pdo php8-gd php8-pgsql php8-pdo_pgsql php8-mbstring \
 	php8-intl php8-xml php8-curl php8-session \
 	php8-dom php8-fileinfo php8-json php8-iconv \
 	php8-pcntl php8-posix php8-zip php8-openssl \
